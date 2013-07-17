@@ -1,0 +1,3 @@
+MultiPeerEditor
+===============
+A collaboritve text editor built for iPad that uses the New MultipeerConnectivity framework in iOS 7. Features will include Google Docs style real time collaborative editing between up to 8 people within close proximity using either Bluetooth or WiFi, with the ability to insert images and and drawings into the document. Documents will be saved locally on each collaborators machine, and there will be options for uploading to Dropbox and Evernote. The preceding features will be available in version 1.0, with more features to be added as development continues. Version 1.0 is going to be targeted for release on day one of public availability of iOS7. A proper name for the app will be forth coming.
