@@ -10,6 +10,7 @@
 
 @interface MessageData : NSObject <NSCoding>
 @property NSRange range;
+@property BOOL selection;
 @property (nonatomic,strong)NSString * messageText;
 //other properties will go here, for example selection and etc.
 

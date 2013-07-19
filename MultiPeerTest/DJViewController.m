@@ -30,23 +30,7 @@
 @end
 
 @implementation DJViewController
--(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    MessageData * message = [[MessageData alloc]init];
-    message.range = range;
-    message.messageText = text;
-    
-    NSData * messageData =[NSKeyedArchiver archivedDataWithRootObject:message];
-    
-    if(self.session){
-        [self.session sendData:messageData toPeers:self.session.connectedPeers withMode:MCSessionSendDataUnreliable error:nil];
-    }
-    else{
-        [self session:self.session didReceiveData:messageData fromPeer:self.peerId];
-    }
 
-    
-    return YES;
-}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -56,18 +40,32 @@
     _queue = [[NSOperationQueue alloc]init];
 }
 - (IBAction)sendData:(UIButton *)sender {
+}
+
+-(void)sendDataWithData:(NSData *)messageData{
     NSError *error;
-    NSLog(@" Sending data!!");
     
-    if(self.session) {
-        [self.session sendData:UIImagePNGRepresentation([UIImage imageNamed:@"GreenStar"]) toPeers:self.session.connectedPeers withMode:MCSessionSendDataUnreliable error:&error];
-        
-            NSLog(@" Sending data!! !! !!! ");
+//    if(self.session) {
+//        [self.session sendData:UIImagePNGRepresentation([UIImage imageNamed:@"GreenStar"]) toPeers:self.session.connectedPeers withMode:MCSessionSendDataUnreliable error:&error];
+//        
+//        NSLog(@" Sending data!! !! !!! ");
+//    }
+//    if(error) {
+//        NSLog(@"%@",error);
+//    }
+
+    if(self.session){
+        [self.session sendData:messageData toPeers:self.session.connectedPeers withMode:MCSessionSendDataUnreliable error:&error];
+    }
+    else{
+        [self session:self.session didReceiveData:messageData fromPeer:self.peerId];
     }
     if(error) {
         NSLog(@"%@",error);
     }
+
 }
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -130,8 +128,32 @@
 
 }
 
-- (void)textViewDidChangeSelection:(UITextView *)textView{
+-(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    MessageData * message = [[MessageData alloc]init];
+    message.range = range;
+    message.messageText = text;
+    message.selection= NO;
+    NSData * messageData =[NSKeyedArchiver archivedDataWithRootObject:message];
+    [self sendDataWithData:messageData];
+    
+    
+    return YES;
+}
 
+- (void)textViewDidChangeSelection:(UITextView *)textView{
+   // UITextRange * selectionRange =textView.selectedTextRange;
+  //debugging only
+    if(textView == self.textViewDown){
+    NSRange selectedRange = textView.selectedRange;
+    //send message about selected range
+    MessageData * md = [[MessageData alloc]init];
+    md.selection = YES;
+    md.range = selectedRange;
+    NSData * messageData =[NSKeyedArchiver archivedDataWithRootObject:md];
+  //  [self sendDataWithData:messageData];
+    }
+    
+    //    textView setSe
 }
 
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange{
@@ -181,16 +203,43 @@
     
     NSLog(@"Message Text: %@",md.messageText);
     NSLog(@"Range: %@",[NSValue valueWithRange:md.range]);
+    NSLog(@"Selection: %@",[NSNumber numberWithBool:md.selection]);
+    
     
   //find out which data it is
     [_queue addOperationWithBlock:^{
         //get text
-        NSString * text = self.textViewUp.text;
-        text = [text stringByReplacingCharactersInRange:md.range withString:md.messageText];
+        NSString * text;
+        NSMutableAttributedString *attributedString;
+        text = self.textViewUp.text;
+        if(!md.selection){
         
+            text = [text stringByReplacingCharactersInRange:md.range withString:md.messageText];
+        }
+        else{
+          text = [text substringWithRange:md.range];
+          attributedString = [[NSMutableAttributedString alloc] initWithString:text];
+            [attributedString addAttribute:NSForegroundColorAttributeName
+                                     value:[UIColor redColor]
+                                     range:md.range];
+        }
         
         [[NSOperationQueue mainQueue]addOperationWithBlock:^{
-            self.textViewUp.text =text;
+            if(!md.selection){
+                self.textViewUp.text =text;
+            }
+            else{
+                self.textViewUp.attributedText = attributedString;
+                self.textViewUp.selectedRange =md.range;
+                
+               // I need to disable it for now. It doesn't work like I expected.
+                // [self.textViewUp select:self];
+               // self.textViewUp.selectedRange = md.range;
+            }
+            //what if multiple people select at the same time? we need to add ranges right??
+           
+            
+            
             
         }];
     

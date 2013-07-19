@@ -14,7 +14,7 @@
     NSValue * val = [NSValue valueWithRange:self.range];
     [encoder encodeObject:val forKey:@"range"];
     [encoder encodeObject:self.messageText forKey:@"messageText"];
-
+    [encoder encodeObject:[NSNumber numberWithBool:self.selection] forKey:@"selection"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
@@ -22,6 +22,8 @@
         //decode properties, other class vars
         self.messageText = [decoder decodeObjectForKey:@"messageText"];
         self.range = [(NSValue *)[decoder decodeObjectForKey:@"range"]rangeValue];
+        self.selection = [(NSNumber *)[decoder decodeObjectForKey:@"selection"]boolValue];
+
     }
     return self;
 }
