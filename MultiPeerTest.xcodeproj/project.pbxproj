@@ -22,6 +22,7 @@
 		82D4DCCB1787CDB9004780C3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 82D4DCC91787CDB9004780C3 /* InfoPlist.strings */; };
 		82D4DCCD1787CDB9004780C3 /* MultiPeerTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 82D4DCCC1787CDB9004780C3 /* MultiPeerTestTests.m */; };
 		82D4DCD81787D044004780C3 /* MCNearbyHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 82D4DCD71787D041004780C3 /* MCNearbyHelper.m */; };
+		82FFA8DF1798C90100FA35CE /* MessageData.m in Sources */ = {isa = PBXBuildFile; fileRef = 82FFA8DE1798C90100FA35CE /* MessageData.m */; };
 		DB5550941796224800EDB12A /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB5550931796224800EDB12A /* MultipeerConnectivity.framework */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,8 @@
 		82D4DCCC1787CDB9004780C3 /* MultiPeerTestTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MultiPeerTestTests.m; sourceTree = "<group>"; };
 		82D4DCD61787D041004780C3 /* MCNearbyHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MCNearbyHelper.h; sourceTree = "<group>"; };
 		82D4DCD71787D041004780C3 /* MCNearbyHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MCNearbyHelper.m; sourceTree = "<group>"; };
+		82FFA8DD1798C90100FA35CE /* MessageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageData.h; sourceTree = "<group>"; };
+		82FFA8DE1798C90100FA35CE /* MessageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageData.m; sourceTree = "<group>"; };
 		DB5550931796224800EDB12A /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		DB9A479F17960CA0000842F1 /* GreenStar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GreenStar.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -132,6 +135,8 @@
 				82D4DCB01787CDB9004780C3 /* DJAppDelegate.h */,
 				82D4DCB11787CDB9004780C3 /* DJAppDelegate.m */,
 				82D4DCB31787CDB9004780C3 /* Main.storyboard */,
+				82FFA8DD1798C90100FA35CE /* MessageData.h */,
+				82FFA8DE1798C90100FA35CE /* MessageData.m */,
 				82D4DCB61787CDB9004780C3 /* DJViewController.h */,
 				82D4DCB71787CDB9004780C3 /* DJViewController.m */,
 				82D4DCB91787CDB9004780C3 /* Images.xcassets */,
@@ -272,6 +277,7 @@
 				82D4DCD81787D044004780C3 /* MCNearbyHelper.m in Sources */,
 				82D4DCB21787CDB9004780C3 /* DJAppDelegate.m in Sources */,
 				82D4DCB81787CDB9004780C3 /* DJViewController.m in Sources */,
+				82FFA8DF1798C90100FA35CE /* MessageData.m in Sources */,
 				82D4DCAE1787CDB8004780C3 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

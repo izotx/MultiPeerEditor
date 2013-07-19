@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 DJMobileInc. All rights reserved.
 
 #import "DJViewController.h"
+#import "MessageData.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 
 @interface DJViewController ()<MCBrowserViewControllerDelegate, MCSessionDelegate, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate, MCAdvertiserAssistantDelegate, UITextViewDelegate>
@@ -20,23 +21,38 @@
 @property(nonatomic,strong) MCBrowserViewController * browserController;
 @property (strong, nonatomic) IBOutlet UITextField *textField;
 @property(nonatomic,strong) MCSession * session;
-@property (weak, nonatomic) IBOutlet UITextView *textView;
+
+@property (weak, nonatomic) IBOutlet UITextView *textViewUp;
+@property (strong, nonatomic) IBOutlet UITextView *textViewDown;
 @property(strong,nonatomic) NSOperationQueue * queue;
-
-
-
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
+
 @end
 
 @implementation DJViewController
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    [self.session sendData:[textView.text dataUsingEncoding:NSUTF8StringEncoding] toPeers:self.session.connectedPeers withMode:MCSessionSendDataUnreliable error:nil];
+    MessageData * message = [[MessageData alloc]init];
+    message.range = range;
+    message.messageText = text;
+    
+    NSData * messageData =[NSKeyedArchiver archivedDataWithRootObject:message];
+    
+    if(self.session){
+        [self.session sendData:messageData toPeers:self.session.connectedPeers withMode:MCSessionSendDataUnreliable error:nil];
+    }
+    else{
+        [self session:self.session didReceiveData:messageData fromPeer:self.peerId];
+    }
+
+    
     return YES;
 }
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.textView.delegate = self;
+    self.textViewUp.delegate = self;
+    self.textViewDown.delegate = self;
+    
     _queue = [[NSOperationQueue alloc]init];
 }
 - (IBAction)sendData:(UIButton *)sender {
@@ -95,6 +111,37 @@
     
 }
 
+#pragma mark TextViewDelegate
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView{
+    return YES;
+}
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView;{
+    return YES;
+}
+
+- (void)textViewDidBeginEditing:(UITextView *)textView{
+
+}
+- (void)textViewDidEndEditing:(UITextView *)textView;{
+
+}
+
+- (void)textViewDidChange:(UITextView *)textView{
+
+}
+
+- (void)textViewDidChangeSelection:(UITextView *)textView{
+
+}
+
+- (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange{
+    return  YES;
+}
+- (BOOL)textView:(UITextView *)textView shouldInteractWithTextAttachment:(NSTextAttachment *)textAttachment inRange:(NSRange)characterRange {
+    return  YES;
+}
+
+
 #pragma mark browser delegate
 -(void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController{
     [browserViewController dismissViewControllerAnimated:YES completion:^{
@@ -119,6 +166,9 @@
      NSLog(@"Lost Peer! %@ ",peerID);
 }
 
+
+#pragma mark Session
+
 -(void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress{
     
     NSLog(@"Received Resource %@",resourceName);
@@ -126,14 +176,29 @@
 }
 
 -(void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID{
-    NSString * s = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@"%@",s);
-   
-    [[NSOperationQueue mainQueue]addOperationWithBlock:^{
-            self.textView.text =[self.textView.text stringByAppendingString:s];
+    //NSString * s = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+    MessageData *md =   [NSKeyedUnarchiver unarchiveObjectWithData:data];
     
+    NSLog(@"Message Text: %@",md.messageText);
+    NSLog(@"Range: %@",[NSValue valueWithRange:md.range]);
+    
+  //find out which data it is
+    [_queue addOperationWithBlock:^{
+        //get text
+        NSString * text = self.textViewUp.text;
+        text = [text stringByReplacingCharactersInRange:md.range withString:md.messageText];
+        
+        
+        [[NSOperationQueue mainQueue]addOperationWithBlock:^{
+            self.textViewUp.text =text;
+            
+        }];
     
     }];
+    //get text
+    
+    
+    
     
     
 }
@@ -176,6 +241,8 @@
     return YES;
     
 }
+
+#pragma mark Advertising
 -(void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didNotStartAdvertisingPeer:(NSError *)error{
     NSLog(@"Advertising Start Error %@",[error debugDescription]);
 }
