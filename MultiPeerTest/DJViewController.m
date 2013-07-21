@@ -149,10 +149,14 @@
     MessageData * md = [[MessageData alloc]init];
     md.selection = YES;
     md.range = selectedRange;
+        
+        NSLog(@" Did Change Selection %@",[NSValue valueWithRange:selectedRange]);
+        
     NSData * messageData =[NSKeyedArchiver archivedDataWithRootObject:md];
-  //  [self sendDataWithData:messageData];
+        if(md.range.length>0){
+            [self sendDataWithData:messageData];
     }
-    
+  }
     //    textView setSe
 }
 
@@ -217,11 +221,18 @@
             text = [text stringByReplacingCharactersInRange:md.range withString:md.messageText];
         }
         else{
-          text = [text substringWithRange:md.range];
+            //check what is selected?
+         // text = [text substringWithRange:md.range];
+         // NSLog(@"Text is: %@",text);
+         //creating atributed String
           attributedString = [[NSMutableAttributedString alloc] initWithString:text];
+        
             [attributedString addAttribute:NSForegroundColorAttributeName
                                      value:[UIColor redColor]
                                      range:md.range];
+            
+             NSLog(@"Attributed String: %@",attributedString);
+            
         }
         
         [[NSOperationQueue mainQueue]addOperationWithBlock:^{
@@ -229,9 +240,12 @@
                 self.textViewUp.text =text;
             }
             else{
+                self.textViewUp.scrollEnabled = NO;
                 self.textViewUp.attributedText = attributedString;
+                NSLog(@"Selecting range %@",[NSValue valueWithRange:md.range]);
                 self.textViewUp.selectedRange =md.range;
-                
+                NSLog(@"Selecting range 2");
+                self.textViewUp.scrollEnabled = YES;
                // I need to disable it for now. It doesn't work like I expected.
                 // [self.textViewUp select:self];
                // self.textViewUp.selectedRange = md.range;
