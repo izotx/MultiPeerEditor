@@ -219,15 +219,12 @@
         if(!md.selection){
         
             text = [text stringByReplacingCharactersInRange:md.range withString:md.messageText];
-        }
+                    }
         else{
             //check what is selected?
-         // text = [text substringWithRange:md.range];
-         // NSLog(@"Text is: %@",text);
-         //creating atributed String
-          attributedString = [[NSMutableAttributedString alloc] initWithString:text];
         
-            [attributedString addAttribute:NSForegroundColorAttributeName
+          attributedString = [[NSMutableAttributedString alloc] initWithString:text];
+         [attributedString addAttribute:NSForegroundColorAttributeName
                                      value:[UIColor redColor]
                                      range:md.range];
             
@@ -237,6 +234,7 @@
         
         [[NSOperationQueue mainQueue]addOperationWithBlock:^{
             if(!md.selection){
+                self.textViewUp.attributedText = nil;
                 self.textViewUp.text =text;
             }
             else{

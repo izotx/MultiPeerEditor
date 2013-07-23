@@ -15,6 +15,7 @@
     [encoder encodeObject:val forKey:@"range"];
     [encoder encodeObject:self.messageText forKey:@"messageText"];
     [encoder encodeObject:[NSNumber numberWithBool:self.selection] forKey:@"selection"];
+    [encoder encodeObject:self.peerId forKey:@"peerId"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
