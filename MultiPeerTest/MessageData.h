@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
-
+@class MPUser;
 @interface MessageData : NSObject <NSCoding>
 @property NSRange range;
 @property BOOL selection;
 @property (nonatomic,strong)NSString * messageText;
-@property (nonatomic,strong) MCPeerID * peerId;
+@property(strong,nonatomic)MPUser *user;
 
 //other properties will go here, for example selection and etc.
 

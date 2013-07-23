@@ -7,7 +7,7 @@
 //
 
 #import "MessageData.h"
-
+#import "MPUser.h"
 @implementation MessageData
 - (void)encodeWithCoder:(NSCoder *)encoder {
     //Encode properties, other class variables, etc
@@ -15,7 +15,7 @@
     [encoder encodeObject:val forKey:@"range"];
     [encoder encodeObject:self.messageText forKey:@"messageText"];
     [encoder encodeObject:[NSNumber numberWithBool:self.selection] forKey:@"selection"];
-    [encoder encodeObject:self.peerId forKey:@"peerId"];
+    [encoder encodeObject:self.user forKey:@"user"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
@@ -24,7 +24,7 @@
         self.messageText = [decoder decodeObjectForKey:@"messageText"];
         self.range = [(NSValue *)[decoder decodeObjectForKey:@"range"]rangeValue];
         self.selection = [(NSNumber *)[decoder decodeObjectForKey:@"selection"]boolValue];
-
+        self.user = [decoder decodeObjectForKey:@"user"];
     }
     return self;
 }

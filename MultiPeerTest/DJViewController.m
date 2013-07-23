@@ -7,6 +7,7 @@
 
 #import "DJViewController.h"
 #import "MessageData.h"
+#import "MPUser.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 
 @interface DJViewController ()<MCBrowserViewControllerDelegate, MCSessionDelegate, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate, MCAdvertiserAssistantDelegate, UITextViewDelegate>
@@ -45,15 +46,6 @@
 -(void)sendDataWithData:(NSData *)messageData{
     NSError *error;
     
-//    if(self.session) {
-//        [self.session sendData:UIImagePNGRepresentation([UIImage imageNamed:@"GreenStar"]) toPeers:self.session.connectedPeers withMode:MCSessionSendDataUnreliable error:&error];
-//        
-//        NSLog(@" Sending data!! !! !!! ");
-//    }
-//    if(error) {
-//        NSLog(@"%@",error);
-//    }
-
     if(self.session){
         [self.session sendData:messageData toPeers:self.session.connectedPeers withMode:MCSessionSendDataUnreliable error:&error];
     }
@@ -63,9 +55,7 @@
     if(error) {
         NSLog(@"%@",error);
     }
-
 }
-
 
 - (void)didReceiveMemoryWarning
 {
@@ -74,14 +64,10 @@
 }
 
 - (IBAction)startAdvertising:(id)sender {
-
-    
-    
     [self.adevertiser startAdvertisingPeer];
 }
 
 - (IBAction)startBrowsing:(id)sender {
-   
     [self.browser startBrowsingForPeers];
     
 }
@@ -90,10 +76,10 @@
         
         _browserController = [[MCBrowserViewController alloc]initWithServiceType:SERVICE session:_session];
         _browserController.delegate = self;
-     }
+    }
     [self presentViewController:_browserController animated:YES completion:nil];
-
-
+    
+    
 }
 
 - (IBAction)startSessionFromC:(id)sender {
@@ -104,7 +90,7 @@
     self.adevertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:self.peerId discoveryInfo:nil serviceType:SERVICE];
     self.adevertiser.delegate = self;
     self.browser =[[MCNearbyServiceBrowser alloc]initWithPeer:self.peerId serviceType:SERVICE];
-
+    
     self.browser.delegate = self;
     
 }
@@ -118,14 +104,14 @@
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView{
-
+    
 }
 - (void)textViewDidEndEditing:(UITextView *)textView;{
-
+    
 }
 
 - (void)textViewDidChange:(UITextView *)textView{
-
+    
 }
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
@@ -141,23 +127,22 @@
 }
 
 - (void)textViewDidChangeSelection:(UITextView *)textView{
-   // UITextRange * selectionRange =textView.selectedTextRange;
-  //debugging only
+    // UITextRange * selectionRange =textView.selectedTextRange;
+    //debugging only
     if(textView == self.textViewDown){
-    NSRange selectedRange = textView.selectedRange;
-    //send message about selected range
-    MessageData * md = [[MessageData alloc]init];
-    md.selection = YES;
-    md.range = selectedRange;
+        NSRange selectedRange = textView.selectedRange;
+        //send message about selected range
+        MessageData * md = [[MessageData alloc]init];
+        md.selection = YES;
+        md.range = selectedRange;
         
         NSLog(@" Did Change Selection %@",[NSValue valueWithRange:selectedRange]);
         
-    NSData * messageData =[NSKeyedArchiver archivedDataWithRootObject:md];
+        NSData * messageData =[NSKeyedArchiver archivedDataWithRootObject:md];
         if(md.range.length>0){
             [self sendDataWithData:messageData];
+        }
     }
-  }
-    //    textView setSe
 }
 
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange{
@@ -182,14 +167,14 @@
 }
 
 - (void)browser:(MCNearbyServiceBrowser *)browser didNotStartBrowsingForPeers:(NSError *)error{
-      NSLog(@"%@ ",error.debugDescription);
+    NSLog(@"%@ ",error.debugDescription);
 }
 
 - (void)browser:(MCNearbyServiceBrowser *)browser foundPeer:(MCPeerID *)peerID withDiscoveryInfo:(NSDictionary *)info{
     [browser invitePeer:peerID toSession:self.session withContext:[NSData dataWithBytes:"\x01" length:1] timeout:30];
 }
 - (void)browser:(MCNearbyServiceBrowser *)browser lostPeer:(MCPeerID *)peerID{
-     NSLog(@"Lost Peer! %@ ",peerID);
+    NSLog(@"Lost Peer! %@ ",peerID);
 }
 
 
@@ -210,25 +195,25 @@
     NSLog(@"Selection: %@",[NSNumber numberWithBool:md.selection]);
     
     
-  //find out which data it is
+    //find out which data it is
     [_queue addOperationWithBlock:^{
         //get text
         NSString * text;
         NSMutableAttributedString *attributedString;
         text = self.textViewUp.text;
         if(!md.selection){
-        
+            
             text = [text stringByReplacingCharactersInRange:md.range withString:md.messageText];
-                    }
+        }
         else{
             //check what is selected?
-        
-          attributedString = [[NSMutableAttributedString alloc] initWithString:text];
-         [attributedString addAttribute:NSForegroundColorAttributeName
+            
+            attributedString = [[NSMutableAttributedString alloc] initWithString:text];
+            [attributedString addAttribute:NSForegroundColorAttributeName
                                      value:[UIColor redColor]
                                      range:md.range];
             
-             NSLog(@"Attributed String: %@",attributedString);
+            NSLog(@"Attributed String: %@",attributedString);
             
         }
         
@@ -244,17 +229,17 @@
                 self.textViewUp.selectedRange =md.range;
                 NSLog(@"Selecting range 2");
                 self.textViewUp.scrollEnabled = YES;
-               // I need to disable it for now. It doesn't work like I expected.
+                // I need to disable it for now. It doesn't work like I expected.
                 // [self.textViewUp select:self];
-               // self.textViewUp.selectedRange = md.range;
+                // self.textViewUp.selectedRange = md.range;
             }
             //what if multiple people select at the same time? we need to add ranges right??
-           
+            
             
             
             
         }];
-    
+        
     }];
     //get text
     
