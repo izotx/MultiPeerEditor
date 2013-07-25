@@ -11,7 +11,9 @@
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 
 @interface DJViewController ()<MCBrowserViewControllerDelegate, MCSessionDelegate, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate, MCAdvertiserAssistantDelegate, UITextViewDelegate>
-
+{
+    NSRange previousSelectedRange;
+}
 @property(strong,nonatomic)MCNearbyServiceAdvertiser *adevertiser;
 @property(strong,nonatomic)MCNearbyServiceBrowser *browser;
 @property(strong,nonatomic)MCPeerID *peerId;
@@ -27,7 +29,6 @@
 @property (strong, nonatomic) IBOutlet UITextView *textViewDown;
 @property(strong,nonatomic) NSOperationQueue * queue;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
-
 @end
 
 @implementation DJViewController
@@ -37,7 +38,7 @@
     [super viewDidLoad];
     self.textViewUp.delegate = self;
     self.textViewDown.delegate = self;
-    
+    previousSelectedRange = NSMakeRange(0, 0);
     _queue = [[NSOperationQueue alloc]init];
 }
 - (IBAction)sendData:(UIButton *)sender {
@@ -117,7 +118,22 @@
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     MessageData * message = [[MessageData alloc]init];
     message.range = range;
-    message.messageText = text;
+    //message.messageText = text;
+    
+    if(textView.attributedText.length==0)
+    {
+        NSMutableAttributedString * string = [[NSMutableAttributedString alloc]initWithString:textView.text];
+        [string addAttribute:NSForegroundColorAttributeName
+                     value:[UIColor blackColor]
+                       range:NSMakeRange(0, textView.text.length)];
+
+        textView.attributedText = string;
+    }
+    
+    NSAttributedString * attributedString = [[NSAttributedString alloc]initWithString:text];
+    NSLog(@"Attributed String %@",attributedString);
+    
+    message.attributedString = attributedString;
     message.selection= NO;
     NSData * messageData =[NSKeyedArchiver archivedDataWithRootObject:message];
     [self sendDataWithData:messageData];
@@ -130,6 +146,8 @@
     // UITextRange * selectionRange =textView.selectedTextRange;
     //debugging only
     if(textView == self.textViewDown){
+        
+      
         NSRange selectedRange = textView.selectedRange;
         //send message about selected range
         MessageData * md = [[MessageData alloc]init];
@@ -139,8 +157,10 @@
         NSLog(@" Did Change Selection %@",[NSValue valueWithRange:selectedRange]);
         
         NSData * messageData =[NSKeyedArchiver archivedDataWithRootObject:md];
+        [self sendDataWithData:messageData];
+ 
         if(md.range.length>0){
-            [self sendDataWithData:messageData];
+      //      [self sendDataWithData:messageData];
         }
     }
 }
@@ -189,50 +209,65 @@
 -(void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID{
     //NSString * s = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
     MessageData *md =   [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    
+    /*
     NSLog(@"Message Text: %@",md.messageText);
-    NSLog(@"Range: %@",[NSValue valueWithRange:md.range]);
+    NSLog(@"Message Text: %@",md.attributedString);
+   */
+     NSLog(@"Range: %@",[NSValue valueWithRange:md.range]);
     NSLog(@"Selection: %@",[NSNumber numberWithBool:md.selection]);
     
     
     //find out which data it is
     [_queue addOperationWithBlock:^{
         //get text
-        NSString * text;
-        NSMutableAttributedString *attributedString;
-        text = self.textViewUp.text;
+      //  NSString * text;
+        
+        NSMutableAttributedString *text = [self.textViewUp.attributedText mutableCopy];
+       
+        if (text.length<md.range.location + md.range.length) {
+            NSLog(@"Out of range");
+           
+          int emptiness = md.range.location + md.range.length - text.string.length;
+          NSMutableString * s = [[NSMutableString alloc]initWithCapacity:emptiness];
+          if(emptiness>0){
+          while (s.length<emptiness) {
+               [s appendString:@" "];
+             }
+        }
+            NSAttributedString * as = [[NSAttributedString alloc]initWithString:s attributes:nil];
+            [text appendAttributedString:as];
+        }
+       
         if(!md.selection){
+            [text replaceCharactersInRange:md.range withAttributedString:md.attributedString];
             
-            text = [text stringByReplacingCharactersInRange:md.range withString:md.messageText];
         }
         else{
             //check what is selected?
-            
-            attributedString = [[NSMutableAttributedString alloc] initWithString:text];
-            [attributedString addAttribute:NSForegroundColorAttributeName
-                                     value:[UIColor redColor]
-                                     range:md.range];
-            
-            NSLog(@"Attributed String: %@",attributedString);
-            
+            //            [text addAttribute:NSForegroundColorAttributeName
+            //                                     value:[UIColor redColor]
+            //                                     range:md.range];
         }
         
         [[NSOperationQueue mainQueue]addOperationWithBlock:^{
-            if(!md.selection){
-                self.textViewUp.attributedText = nil;
-                self.textViewUp.text =text;
-            }
-            else{
-                self.textViewUp.scrollEnabled = NO;
-                self.textViewUp.attributedText = attributedString;
-                NSLog(@"Selecting range %@",[NSValue valueWithRange:md.range]);
-                self.textViewUp.selectedRange =md.range;
-                NSLog(@"Selecting range 2");
-                self.textViewUp.scrollEnabled = YES;
+            
+            self.textViewUp.attributedText = text;
+            
+            
+//            if(!md.selection){
+//                self.textViewUp.attributedText = text;
+//            }
+//            else{
+//                self.textViewUp.scrollEnabled = NO;
+//                self.textViewUp.attributedText = attributedString;
+//                NSLog(@"Selecting range %@",[NSValue valueWithRange:md.range]);
+//                self.textViewUp.selectedRange =md.range;
+//                NSLog(@"Selecting range 2");
+//                self.textViewUp.scrollEnabled = YES;
                 // I need to disable it for now. It doesn't work like I expected.
                 // [self.textViewUp select:self];
                 // self.textViewUp.selectedRange = md.range;
-            }
+           // }
             //what if multiple people select at the same time? we need to add ranges right??
             
             

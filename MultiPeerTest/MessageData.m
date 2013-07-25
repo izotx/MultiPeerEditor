@@ -16,6 +16,8 @@
     [encoder encodeObject:self.messageText forKey:@"messageText"];
     [encoder encodeObject:[NSNumber numberWithBool:self.selection] forKey:@"selection"];
     [encoder encodeObject:self.user forKey:@"user"];
+    [encoder encodeObject:self.attributedString forKey:@"attributedString"];
+    
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
@@ -25,6 +27,7 @@
         self.range = [(NSValue *)[decoder decodeObjectForKey:@"range"]rangeValue];
         self.selection = [(NSNumber *)[decoder decodeObjectForKey:@"selection"]boolValue];
         self.user = [decoder decodeObjectForKey:@"user"];
+        self.attributedString =[decoder decodeObjectForKey:@"attributedString"];
     }
     return self;
 }

@@ -13,6 +13,8 @@
 @property NSRange range;
 @property BOOL selection;
 @property (nonatomic,strong)NSString * messageText;
+@property (nonatomic,strong)NSAttributedString * attributedString;
+
 @property(strong,nonatomic)MPUser *user;
 
 //other properties will go here, for example selection and etc.
