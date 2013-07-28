@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		82A0CE9217A4955800397077 /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A0CE9117A4955800397077 /* DataSource.m */; };
 		82D4DCA21787CDB8004780C3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82D4DCA11787CDB8004780C3 /* Foundation.framework */; };
 		82D4DCA41787CDB8004780C3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82D4DCA31787CDB8004780C3 /* CoreGraphics.framework */; };
 		82D4DCA61787CDB8004780C3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82D4DCA51787CDB8004780C3 /* UIKit.framework */; };
@@ -39,6 +40,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		82A0CE8E17A3762A00397077 /* MCSession_SessionExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MCSession_SessionExtension.h; sourceTree = "<group>"; };
+		82A0CE8F17A383E200397077 /* Notes */ = {isa = PBXFileReference; lastKnownFileType = text; path = Notes; sourceTree = "<group>"; };
+		82A0CE9017A4955800397077 /* DataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataSource.h; sourceTree = "<group>"; };
+		82A0CE9117A4955800397077 /* DataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataSource.m; sourceTree = "<group>"; };
 		82D4DC9E1787CDB8004780C3 /* MultiPeerTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiPeerTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		82D4DCA11787CDB8004780C3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		82D4DCA31787CDB8004780C3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -106,6 +111,7 @@
 		82D4DC951787CDB8004780C3 = {
 			isa = PBXGroup;
 			children = (
+				82A0CE8E17A3762A00397077 /* MCSession_SessionExtension.h */,
 				DB121E58179F3A5D003365D6 /* MPUser.h */,
 				DB121E59179F3A5D003365D6 /* MPUser.m */,
 				DB9A479F17960CA0000842F1 /* GreenStar.png */,
@@ -142,6 +148,8 @@
 		82D4DCA71787CDB8004780C3 /* MultiPeerTest */ = {
 			isa = PBXGroup;
 			children = (
+				82A0CE9017A4955800397077 /* DataSource.h */,
+				82A0CE9117A4955800397077 /* DataSource.m */,
 				821513F8178D13BC005850CE /* iPad */,
 				82D4DCB01787CDB9004780C3 /* DJAppDelegate.h */,
 				82D4DCB11787CDB9004780C3 /* DJAppDelegate.m */,
@@ -150,6 +158,7 @@
 				82FFA8DE1798C90100FA35CE /* MessageData.m */,
 				82D4DCB61787CDB9004780C3 /* DJViewController.h */,
 				82D4DCB71787CDB9004780C3 /* DJViewController.m */,
+				82A0CE8F17A383E200397077 /* Notes */,
 				82D4DCB91787CDB9004780C3 /* Images.xcassets */,
 				82D4DCD61787D041004780C3 /* MCNearbyHelper.h */,
 				82D4DCD71787D041004780C3 /* MCNearbyHelper.m */,
@@ -322,6 +331,7 @@
 				DB121E5A179F3A5E003365D6 /* MPUser.m in Sources */,
 				82D4DCB21787CDB9004780C3 /* DJAppDelegate.m in Sources */,
 				82D4DCB81787CDB9004780C3 /* DJViewController.m in Sources */,
+				82A0CE9217A4955800397077 /* DataSource.m in Sources */,
 				82FFA8DF1798C90100FA35CE /* MessageData.m in Sources */,
 				82D4DCAE1787CDB8004780C3 /* main.m in Sources */,
 			);
